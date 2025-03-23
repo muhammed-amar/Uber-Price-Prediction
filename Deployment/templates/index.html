@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+:root {
+    --main-bg-color: #262626; /* لون الخلفية الرئيسي (أسود داكن) */
+    --text-color: #EFEFEF; /* لون النص (أبيض) */
+    --accent-color: #FF5733; /* لون اللفتة البارزة (برتقالي) */
+    --border-color: #444; /* لون الحدود (أسود) */
+    --button-hover-color: #FF8C66; /* لون زر الإرسال عند التحويش */
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--main-bg-color);
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #333; /* لون الفريم (أسود) */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 50px;
+    border: 2px solid var(--border-color); /* لون الحدود */
+}
+
+h2 {
+    color: var(--accent-color);
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: var(--main-bg-color);
+    color: var(--text-color);
+    outline: none;
+}
+
+button {
+    background-color: var(--accent-color);
+    color: #FFFFFF; /* لون النص على زر الإرسال */
+    padding: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--button-hover-color); /* لون زر الإرسال عند التحويش */
+}
+
+#result {
+    margin-top: 20px;
+    color: var(--text-color);
+}
+
+/* تغيير لون علامة الساعة وعلامة التقويم إلى اللون الأبيض */
+#hour,
+#calendar {
+    color: #FFFFFF;
+}
+
+
+    </style>
+    <title>Data Input Form</title>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Enter Data:</h2>
+        <form id="dataForm" method="post" action="/predict">
+            <label for="weather">Weather:</label>
+            <select id="weather" name="weather" required>
+                <option value="2">Stormy</option>
+                <option value="3">Sunny</option>
+                <option value="4">Windy</option>
+                <option value="1">Rainy</option>
+                <option value="0">Cloudy</option>
+            </select> 
+
+            <label for="pickup_longitude">pickup_longitude:</label>
+            <input type="number" id="pickup_longitude" name="pickup_longitude" required step="any">
+
+            <label for="pickup_latitude">pickup_latitude:</label>
+            <input type="number" id="pickup_latitude" name="pickup_latitude" required step="any">
+
+            <label for="dropoff_longitude">dropoff_longitude:</label>
+            <input type="number" id="dropoff_longitude" name="dropoff_longitude" required step="any">
+
+            <label for="dropoff_latitude">dropoff_latitude:</label>
+            <input type="number" id="dropoff_latitude" name="dropoff_latitude" required step="any">
+
+            <label for="passenger_count">Passenger Count:</label>
+            <input type="number" id="passenger_count" name="passenger_count" required>
+
+            <label for="hour">Hour:</label>
+            <input type="time" id="hour" name="hour" required step="3600">
+            
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+
+            <label for="Weekday">Day of the Week:</label>
+            <select id="Weekday" name="Weekday" required>
+                <option value="0">Monday</option>
+                <option value="1">Tuesday</option>
+                <option value="2">Wednesday</option>
+                <option value="3">Thursday</option>
+                <option value="4">Friday</option>
+                <option value="5">Saturday</option>
+                <option value="6">Sunday</option>
+            </select>
+
+            
+            
+
+            <label for="jfk_dist">JFK Distance:</label>
+            <input type="number" id="jfk_dist" name="jfk_dist" required step="any">
+
+            <label for="ewr_dist">EWR Distance:</label>
+            <input type="number" id="ewr_dist" name="ewr_dist" required step="any">
+
+            <label for="lga_dist">LGA Distance:</label>
+            <input type="number" id="lga_dist" name="lga_dist" required step="any">
+
+            <label for="sol_dist">SOL Distance:</label>
+            <input type="number" id="sol_dist" name="sol_dist" required step="any">
+
+            <label for="nyc_dist">NYC Distance:</label>
+            <input type="number" id="nyc_dist" name="nyc_dist" required step="any">
+
+            <label for="distance">Total Distance:</label>
+            <input type="number" id="distance" name="distance" required step="any">
+
+            <label for="bearing">Bearing:</label>
+            <input type="number" id="bearing" name="bearing" required step="any">
+
+            <button type="button" onclick="predict();">Submit</button>
+        </form>
+        
+        <div id="result" class="norm"><p>look here after prediction 👀</p></div>    </div>
+   
+<script>
+    function predict() {
+    var form = document.getElementById("dataForm");
+
+    // جمع بيانات النموذج
+    var weather = form.elements["weather"].value;
+    var pickupLongitude = form.elements["pickup_longitude"].value;
+    var pickupLatitude = form.elements["pickup_latitude"].value;
+    var dropoffLongitude = form.elements["dropoff_longitude"].value;
+    var dropoffLatitude = form.elements["dropoff_latitude"].value;
+    var passengerCount = form.elements["passenger_count"].value;
+    var hourValue = form.elements["hour"].value;
+var hourParts = hourValue.split(":"); // تقسيم الساعة والدقيقة
+var hour24 = parseInt(hourParts[0]); // الجزء الأول هو الساعة
+
+// إذا كانت الساعة بعد الظهر وليست 12 ساعة مساءً، قم بإضافة 12 للحصول على الساعة بتنسيق 24 ساعة
+if (hour24 < 12 && hourParts[1].includes("PM")) {
+    hour24 += 12;
+} else if (hour24 == 12 && hourParts[1].includes("AM")) {
+    hour24 = 0; // منتصف الليل
+}
+    var dateValue = form.elements["date"].value;
+    var dateObj = new Date(dateValue);
+    var year = dateObj.getFullYear();
+    var month = dateObj.getMonth() + 1; // يتم إضافة 1 لأن الشهر يبدأ من 0
+    var day = dateObj.getDate();    
+    var Weekday = form.elements["Weekday"].value;
+    var jfkDist = form.elements["jfk_dist"].value;
+    var ewrDist = form.elements["ewr_dist"].value;
+    var lgaDist = form.elements["lga_dist"].value;
+    var solDist = form.elements["sol_dist"].value;
+    var nycDist = form.elements["nyc_dist"].value;
+    var distance = form.elements["distance"].value;
+    var bearing = form.elements["bearing"].value;
+
+    // إعادة ترتيب البيانات إذا لزم الأمر
+
+    // التحقق من صحة البيانات في النموذج
+    if (!form.checkValidity()) {
+        // إذا كان هناك حقول مفقودة، فلا تقم بإرسال النموذج
+        return;
+    }
+
+    // إنشاء كائن FormData وإضافة البيانات إليه
+    var formData = new FormData();
+    formData.append("weather", weather);
+    formData.append("pickup_longitude", pickupLongitude);
+    formData.append("pickup_latitude", pickupLatitude);
+    formData.append("dropoff_longitude", dropoffLongitude);
+    formData.append("dropoff_latitude", dropoffLatitude);
+    formData.append("passenger_count", passengerCount);
+    formData.append("hour", hour24);
+    formData.append("day", day);
+    formData.append("month", month);
+    formData.append("Weekday", Weekday);
+    formData.append("year", year);
+    formData.append("jfk_dist", jfkDist);
+    formData.append("ewr_dist", ewrDist);
+    formData.append("lga_dist", lgaDist);
+    formData.append("sol_dist", solDist);
+    formData.append("nyc_dist", nycDist);
+    formData.append("distance", distance);
+    formData.append("bearing", bearing);
+
+    // إرسال البيانات إلى الخادم
+    fetch("/predict", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.text())
+    .then(prediction => {
+        document.getElementById("result").innerHTML = String(prediction);
+        
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+
+</script>
+</body>
+</html>
